@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && $uid === auth.uid",
+        ".write": "auth != null && $uid === auth.uid"
+      }
+    },
+    "tracking": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('partner_id').val() === $uid)",
+        ".write": "auth != null && $uid === auth.uid"
+      }
+    }
+  }
+}

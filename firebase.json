@@ -1,0 +1,26 @@
+{
+    "database": {
+        "rules": "database.rules.json"
+    },
+    "flutter":{
+        "platforms":{
+            "android":{
+                "default":{
+                    "projectId":"tapinacozzetta",
+                    "appId":"1:597570191944:android:22559745cf35f74de50e7d",
+                    "fileOutput":"android/app/google-services.json"
+                }
+            },"dart":{
+                "lib/firebase_options.dart":{
+                    "projectId":"tapinacozzetta",
+                    "configurations":{"android":"1:597570191944:android:22559745cf35f74de50e7d",
+                        "ios":"1:597570191944:ios:1c91c09340369694e50e7d",
+                        "macos":"1:597570191944:ios:1c91c09340369694e50e7d",
+                        "web":"1:597570191944:web:21d4ddc1e91d6cb2e50e7d",
+                        "windows":"1:597570191944:web:91efece8cd408879e50e7d"
+                    }
+                }
+            }
+        }
+    }
+}

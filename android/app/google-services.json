@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "597570191944",
+    "project_id": "tapinacozzetta",
+    "storage_bucket": "tapinacozzetta.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597570191944:android:22559745cf35f74de50e7d",
+        "android_client_info": {
+          "package_name": "com.example.compass_web_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd4AATAhwEBorhN2sWcqgK8VGL86IZcAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
