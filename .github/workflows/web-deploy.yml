@@ -1,0 +1,8 @@
+- name: Build Web
+  run: flutter build web --release --base-href "/CompassLoveApp/"
+
+- name: Upload Artifact
+  uses: actions/upload-pages-artifact@v4.0.0
+  with:
+    path: build/web  # <--- Qui confermi il percorso
+          
