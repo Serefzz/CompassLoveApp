@@ -56,6 +56,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '597570191944',
     projectId: 'tapinacozzetta',
     storageBucket: 'tapinacozzetta.firebasestorage.app',
+    databaseURL:  'https://tapinacozzetta-default-rtdb.europe-west1.firebasedatabase.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -65,6 +66,7 @@ class DefaultFirebaseOptions {
     projectId: 'tapinacozzetta',
     storageBucket: 'tapinacozzetta.firebasestorage.app',
     iosBundleId: 'com.example.compassWebApp',
+    databaseURL:  'https://tapinacozzetta-default-rtdb.europe-west1.firebasedatabase.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

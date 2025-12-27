@@ -1,11 +1,8 @@
-import 'dart:async';
-import 'dart:math' as math;
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:flutter_compass/flutter_compass.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:compass_web_app/Cozzetta.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 import 'login.dart';
 import 'Tapina.dart';
@@ -17,10 +14,15 @@ import 'Tapina.dart';
 // Il main runna la nostra app
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) {
+    runApp(const MyApp());
+  });
+
 }
 
 //PARTE DI INTERFACCIA
@@ -45,7 +47,8 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/login',
       routes: {
         '/login' : (context) => LoginPage(),
-        '/Tapina' : (context) => TapinaPage()
+        '/Tapina' : (context) => TapinaPage(),
+        '/Cozzetta' : (context) => CozzettaPage()
       },
     );
   }

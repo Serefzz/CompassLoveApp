@@ -3,10 +3,9 @@
 
 target 'Runner' do
   # Comment the next line if you don't want to use dynamic frameworks
+  pod 'FirebaseAuth'
   use_frameworks!
 
-  # Pods for Runner
-  pod 'FirebaseAuth'
 
   target 'RunnerTests' do
     inherit! :search_paths

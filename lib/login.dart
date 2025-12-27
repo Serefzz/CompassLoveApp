@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -34,9 +32,28 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
+  Future<void> linkPartner(String uidPartner) async {
+    // 1. Prendi l'utente attualmente loggato
+    final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        // 2. Scrivi nel nodo users/auth.uid
+        await _dbRef.child('users').child(user.uid).update({
+          'partner_id': uidPartner,
+          'last_login': ServerValue.timestamp,
+        });
+      } catch (e) {
+        print("Errore durante il collegamento: $e");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -130,32 +147,37 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                     onPressed: () async{
                       bool loginSucces = await login();
-                      (loginSucces == true) && _partnerCode.text.trim().isNotEmpty
-                          ? Navigator.pushNamed(
-                              context,
-                              '/Tapina',
-                              arguments: {
-                                'myId': FirebaseAuth.instance.currentUser!.uid, // UID personale
-                                'partnerId': _partnerCode.text.trim(), // UID del partner
-                              },
-                            )
-                          : print(_partnerCode.text);
+                      if((loginSucces == true) && _partnerCode.text.trim().isNotEmpty){
+                        Navigator.pushNamed(
+                        context,
+                        '/Tapina',
+                        );
+                        linkPartner(_partnerCode.text.trim());
+                      }else{
+                        print('Login non riuscito');
+                      }
                     },
-                    child: Text('  Tapina  '),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink[200],
                       foregroundColor: Colors.white,
                     ),
+                    child: Text('  Tapina  '),
                   ),
                   ElevatedButton(
                     onPressed: () async{
-                      login();
+                      bool loginSucces = await login();
+                      (loginSucces == true)
+                          ? Navigator.pushNamed(
+                              context,
+                              '/Cozzetta',
+                            )
+                          : print('Login non riuscito');
                     },
-                    child: Text('Cozzetta'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightBlue,
                       foregroundColor: Colors.white,
                     ),
+                    child: Text('Cozzetta'),
                   ),
                 ],
               ),

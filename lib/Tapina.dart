@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 
 
@@ -22,6 +21,9 @@ class TapinaPage extends StatefulWidget {
 
 
 class _TapinaPageState extends State<TapinaPage> {
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
+  final user = FirebaseAuth.instance.currentUser;
+  late String partnerId = _dbRef.child('users').child(user!.uid).child('partner_id').get().toString();
   double? _heading; // la direzione a cui punta il dispositivo in gradi (0 quando si apre l'app)
   Position? _position; // la posizione GPS corrente del dispositivo
   StreamSubscription<CompassEvent?>? _compassSub;
@@ -29,8 +31,8 @@ class _TapinaPageState extends State<TapinaPage> {
 
 
   //BISOGNA INSERIRE LE COORDINATE DI COZZETTA
-  final double destLat = 41.8902;
-  final double destLon = 12.4922;
+  late double destLat = 40.750401;
+  late double destLon = 14.638488;
 
   @override
   void initState() {
@@ -104,11 +106,37 @@ class _TapinaPageState extends State<TapinaPage> {
     return (_radToDeg(theta) + 360) % 360;
   }
 
+  Future<void> updatePartnerLocationData() async {
+    DataSnapshot snapshot = await _dbRef.child('tracking').child(partnerId).get();
+    var data = snapshot.value as Map<dynamic, dynamic>;
+    print('STO PRENDENDO I DATI');
+    if (partnerId.isNotEmpty && snapshot.value != null && snapshot.value is Map) {
+      print('STO PRENDENDO I DATI');
+      destLat = (data['latitude'] as num?)!.toDouble();
+      destLon = (data['longitude'] as num?)!.toDouble();
+    }
+  }
+
+  void startFollowingPartner(String partnerId) async {
+    Timer? _pollingTimer;
+    updatePartnerLocationData();
+
+    if (user != null){
+      _pollingTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
+        try {
+          updatePartnerLocationData();
+        } catch (e) {
+          print("Errore nel recupero automatico: $e");
+        }
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final String my_Id = args['myId'];
-    final String partner_Id = args['partnerId'];
+    startFollowingPartner(partnerId);
+
 
     final bearing = (_position != null)
         ? _bearingTo(_position!.latitude, _position!.longitude, destLat, destLon)
@@ -227,8 +255,6 @@ class _TapinaPageState extends State<TapinaPage> {
                     ),
                   ),
                 ],
-
-
               ),
             ),
             ElevatedButton(
@@ -236,11 +262,12 @@ class _TapinaPageState extends State<TapinaPage> {
                 // request permissions again and get current position once
                 await _initSensors();
                 final pos = await Geolocator.getCurrentPosition();
+                updatePartnerLocationData();
                 setState(() {
                   _position = pos;
                 });
               },
-              child: const Text('Refresh / Request Permissions'),
+              child: const Text('Refresh'),
             ),
             const SizedBox(height: 8),
           ],
